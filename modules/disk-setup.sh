@@ -13,7 +13,6 @@ else
     PART_LUKS="${DISK}2"
 fi
 
-TARGET_MOUNT="/mnt"
 PART_BTRFS="/dev/mapper/cryptroot"
 
 # --- 2. NETTOYAGE (Uniquement si WIPE_TOTAL) ---
@@ -29,11 +28,6 @@ if [[ "$SCENARIO" == "WIPE_TOTAL" ]]; then
     cryptsetup luksFormat --type luks2 "$PART_LUKS"
 fi
 
-sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
-# On force udev à rafraîchir les UUID immédiatement
-sudo udevadm trigger --subsystem-match=block
-sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
-sudo udevadm settle
 
 # --- 3. OUVERTURE ET FORMATAGE ---
 # L'ouverture est systématique (sauf si déjà ouvert, d'où le || true)
@@ -54,38 +48,42 @@ fi
 # On ne touche aux sous-volumes que si on n'est pas en mode REPARATION
 if [[ "$SCENARIO" != "REPARATION" ]]; then
     echo "📦 Gestion des sous-volumes Btrfs..."
-    mount "$PART_BTRFS" "$TARGET_MOUNT"
+    mount "$PART_BTRFS" /mnt
     
     # En mode REINSTALL, on supprime ce qui n'est pas précieux
     if [[ "$SCENARIO" == "REINSTALL" ]]; then
         for sub in @nix @persist @swap; do
-            btrfs subvolume delete "$TARGET_MOUNT/$sub" 2>/dev/null || true
+            btrfs subvolume delete "/mnt/$sub" 2>/dev/null || true
         done
     fi
 
     # On crée ce qui manque (WIPE créera tout, REINSTALL créera les 3 supprimés, @home reste)
-    [[ ! -d "$TARGET_MOUNT/@nix" ]]     && btrfs subvolume create "$TARGET_MOUNT/@nix"
-    [[ ! -d "$TARGET_MOUNT/@persist" ]] && btrfs subvolume create "$TARGET_MOUNT/@persist"
-    [[ ! -d "$TARGET_MOUNT/@home" ]]    && btrfs subvolume create "$TARGET_MOUNT/@home"
-    [[ ! -d "$TARGET_MOUNT/@swap" ]]    && btrfs subvolume create "$TARGET_MOUNT/@swap"
+    [[ ! -d "/mnt/@nix" ]]     && btrfs subvolume create "/mnt/@nix"
+    [[ ! -d "/mnt/@persist" ]] && btrfs subvolume create "/mnt/@persist"
+    [[ ! -d "/mnt/@home" ]]    && btrfs subvolume create "/mnt/@home"
+    [[ ! -d "/mnt/@swap" ]]    && btrfs subvolume create "/mnt/@swap"
     
-    umount "$TARGET_MOUNT"
+    umount /mnt
 fi
 
 # --- 5. MONTAGES FINAUX (Commun à tous les modes) ---
-echo "🧠 Configuration de l'impersistance (tmpfs en RAM)..."
-mount -t tmpfs none "$TARGET_MOUNT" -o size=2G,mode=755
-mkdir -p "$TARGET_MOUNT"/{boot,nix,persist,home,swap}
 
-echo "🔗 Montages des volumes..."
-mount "$PART_BOOT" "$TARGET_MOUNT/boot"
-mount "$PART_BTRFS" "$TARGET_MOUNT/nix" -o subvol=@nix,noatime,compress=zstd,ssd,discard=async
-mount "$PART_BTRFS" "$TARGET_MOUNT/persist" -o subvol=@persist,noatime,compress=zstd,ssd,discard=async
-mount "$PART_BTRFS" "$TARGET_MOUNT/home" -o subvol=@home,noatime,compress=zstd,ssd,discard=async
-mount "$PART_BTRFS" "$TARGET_MOUNT/swap" -o subvol=@swap,noatime,ssd
+sudo udevadm trigger --subsystem-match=block # On force udev à rafraîchir les UUID immédiatement
 sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
-sudo partprobe /dev/$DISK # Rafraichi la détection de la nouvelle table de partitions
+sudo partprobe $DISK # Rafraichi la détection de la nouvelle table de partitions
 sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
 sudo udevadm settle  # Attend que toutes les partitions soient bien reconnues
+sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
 
-echo -e "\n✅ Disque prêt et monté dans $TARGET_MOUNT"
+echo "🧠 Configuration de l'impersistance (tmpfs en RAM)..."
+mount -t tmpfs none /mnt -o size=2G,mode=755
+mkdir -p /mnt/{boot,nix,persist,home,swap}
+
+echo "🔗 Montages des volumes..."
+mount "$PART_BOOT" "/mnt/boot"
+mount "$PART_BTRFS" "/mnt/nix" -o subvol=@nix,noatime,compress=zstd,ssd,discard=async
+mount "$PART_BTRFS" "/mnt/persist" -o subvol=@persist,noatime,compress=zstd,ssd,discard=async
+mount "$PART_BTRFS" "/mnt/home" -o subvol=@home,noatime,compress=zstd,ssd,discard=async
+mount "$PART_BTRFS" "/mnt/swap" -o subvol=@swap,noatime,ssd
+
+echo -e "\n✅ Disque prêt et monté dans /mnt"

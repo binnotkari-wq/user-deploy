@@ -50,6 +50,8 @@ if [[ "$SCENARIO" == "REPARATION" ]]; then
     echo "Corrigez vos fichiers dans : $DOTFILES_TARGET"
     read -p "Prêt pour le rebuild ? (tapez 'yes') : " REPAIR_CONFIRM
     if [[ "$REPAIR_CONFIRM" == "yes" ]]; then
+	mkdir -p /mnt/etc # Créer le dossier etc s'il n'existe pas dans ton montage tmpfs
+	touch /mnt/etc/NIXOS # Créer le marqueur magique
         nixos-enter --root /mnt -c "nixos-rebuild boot -I nixos-config=$DOTFILES_TARGET/$TARGET_HOSTNAME.nix"
     fi
 else
