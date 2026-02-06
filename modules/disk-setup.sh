@@ -29,6 +29,12 @@ if [[ "$SCENARIO" == "WIPE_TOTAL" ]]; then
     cryptsetup luksFormat --type luks2 "$PART_LUKS"
 fi
 
+sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
+# On force udev à rafraîchir les UUID immédiatement
+sudo udevadm trigger --subsystem-match=block
+sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
+sudo udevadm settle
+
 # --- 3. OUVERTURE ET FORMATAGE ---
 # L'ouverture est systématique (sauf si déjà ouvert, d'où le || true)
 echo "🔓 Ouverture du conteneur chiffré..."

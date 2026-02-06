@@ -11,12 +11,6 @@ DOTFILES_TARGET="/mnt/home/$TARGET_USER/Mes-Donnees/Git/nixos-dotfiles"
 
 # --- 2. LOGISTIQUE DES FICHIERS ---
 if [[ "$SCENARIO" != "REPARATION" ]]; then
-    echo "📂 Préparation du dossier cible..."
-    mkdir -p "$(dirname "$DOTFILES_TARGET")"
-    
-    echo "📂 Copie des dotfiles vers le @home préservé..."
-    cp -r "$DOTFILES_SOURCE" "$DOTFILES_TARGET"
-    
     echo "💾 Création du swapfile (4Go)..."
     btrfs filesystem mkswapfile --size 4g /mnt/swap/swapfile
     swapon /mnt/swap/swapfile
@@ -24,10 +18,15 @@ if [[ "$SCENARIO" != "REPARATION" ]]; then
     echo "🔑 Configuration du mot de passe utilisateur..."
     mkdir -p /mnt/persist/etc/secrets
     # mkpasswd demandera le mot de passe et créera le hash
-    mkpasswd -m sha-512 | tee /mnt/persist/etc/secrets/user-password > /dev/null
-    chmod 600 /mnt/persist/etc/secrets/user-password
+    mkpasswd -m yescrypt | tee /mnt/persist/etc/secrets/${TARGET_USER}-password > /dev/null
+    chmod 600 /mnt/persist/etc/secrets/${TARGET_USER}-password
 
-    # --- AJOUT : GÉNÉRATION HARDWARE ---
+    echo "📂 Préparation du dossier cible..."
+    mkdir -p "$(dirname "$DOTFILES_TARGET")"
+    
+    echo "📂 Copie des dotfiles vers le @home préservé..."
+    cp -r "$DOTFILES_SOURCE" "$DOTFILES_TARGET"
+
     echo "⚙️  Génération de la configuration matérielle (UUIDs)..."
     sleep 2
     nixos-generate-config --root /mnt
@@ -37,6 +36,11 @@ if [[ "$SCENARIO" != "REPARATION" ]]; then
     mkdir -p "$HW_TARGET_DIR"
     cp "/mnt/etc/nixos/hardware-configuration.nix" "$HW_TARGET_DIR/${TARGET_HOSTNAME}_hardware-configuration.nix"
     echo "✅ Fichier hardware copié dans $HW_TARGET_DIR"
+    
+    # On donne la propriété à l'utilisateur cible (1000 est l'ID standard du premier user)
+    echo "👤 Ajustement des propriétaires (chown)..."
+    chown -R 1000:1000 "/mnt/home/$TARGET_USER"
+    chown -R 1000:100 "$DOTFILES_TARGET"
 fi
 
 # --- 3. LOGIQUE D'INSTALLATION / RÉPARATION ---
