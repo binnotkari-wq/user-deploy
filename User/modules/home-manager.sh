@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
-set -e
 
-# --- INSTALLATION ET DEPLOIEMENT DE HOME MANAGER ---
+echo "❄️  Initialisation de Home Manager (Version Stable 25.11)..."
 
-echo "📡 Configuration des canaux Nix (Branche Stable 25.11)..."
+# 1. Configuration des canaux (Stable)
+echo "📦 Configuration des sources Nix..."
 nix-channel --add https://nixos.org/channels/nixos-25.11 nixpkgs
 nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz home-manager
 nix-channel --update
 
-echo "📡 Initialisation Home Manager
-export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
-nix-shell '<home-manager>' -A install
-home-manager switch -f /home/benoit/Mes-Donnees/Git/home-manager/home.nix
+# 2. Installation de Home Manager si absent
+if ! command -v home-manager &> /dev/null; then
+    echo "📥 Installation initiale de Home Manager..."
+    nix-shell '<home-manager>' -A install
+fi
 
-echo "🎉 Home Manager installé"
+# 3. Déploiement via chemin absolu
+HM_CONFIG_FILE="$GIT_DIR/home-manager/home.nix"
+
+if [ -f "$HM_CONFIG_FILE" ]; then
+    echo "⚙️  Application de la configuration : $HM_CONFIG_FILE"
+    
+    # Utilisation du chemin direct vers le fichier
+    home-manager switch -f "$HM_CONFIG_FILE"
+else
+    echo "⚠️  Erreur : $HM_CONFIG_FILE introuvable."
+    echo "Assure-toi que git-clone.sh a bien récupéré tes dépôts."
+fi

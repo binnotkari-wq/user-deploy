@@ -1,36 +1,46 @@
 #!/usr/bin/env bash
 
 # --- Configuration ---
-DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-APPS=("btop" "htop" "foot" "zellij" "kate" "mc" "pyradio" "PBE" "applications" "celluloid" "dconf" "fragments" "kiwix-desktop")
+# On s'assure que DOTFILES_DIR pointe bien vers le dossier où sont les dossiers d'apps
+DOTFILES_DIR="$HOME/Mes-Donnees/Git/user-dotfiles"
 
-# Fichier de sauvegarde Gnome dans ton repo
+APPS=("bash" "btop" "htop" "foot" "zellij" "kate" "mc" "pyradio" "PBE" "applications" "celluloid" "dconf" "fragments" "kiwix-desktop")
+
+echo "=========================================="
+echo "    Importation de Dotfiles (Stow + Gnome)"
+echo "=========================================="
+
+# 1. Préparation spécifique pour Bash
+# Stow échouera si un vrai fichier .bashrc existe déjà
+if [ -f ~/.bashrc ] && [ ! -L ~/.bashrc ]; then
+    echo "⚠️  Sauvegarde du .bashrc existant en .bashrc.bak"
+    mv ~/.bashrc ~/.bashrc.bak
+fi
+
+# 2. Liaison des fichiers (Stow)
+echo "--- 🔗 Liaison des fichiers (Stow) ---"
+cd "$DOTFILES_DIR"
+
+for APP in "${APPS[@]}"; do
+    if [ -d "$APP" ]; then
+        # -R : récursif, -v : verbeux, -t : cible
+        stow -R -v -t "$HOME" "$APP"
+    else
+        echo "⏭️  Saut de $APP (dossier non trouvé dans $DOTFILES_DIR)"
+    fi
+done
+
+# 3. Application des réglages Gnome
+# On utilise le chemin relatif au repo pour le fichier dconf
 GNOME_CONF="$DOTFILES_DIR/gnome/settings.dconf"
-mkdir -p "$DOTFILES_DIR/gnome"
 
-echo "=========================================="
-echo "   Importation de Dotfiles (Stow + Gnome)"
-echo "=========================================="
-
-        echo "--- 🔗 Liaison des fichiers (Stow) ---"
-        for APP in "${APPS[@]}"; do
-            if [ -d "$APP" ]; then
-                stow -v -t "$HOME" "$APP"
-            fi
-        done
-
-        echo "--- 🎨 Application des réglages Gnome ---"
-        if [ -f "$GNOME_CONF" ]; then
-            dconf load /org/gnome/ < "$GNOME_CONF"
-            echo "[OK] Gnome mis à jour."
-        fi
-        ;;
-
-    *)
-        echo "Au revoir !"
-        exit 0
-        ;;
-esac
+echo "--- 🎨 Application des réglages Gnome ---"
+if [ -f "$GNOME_CONF" ]; then
+    dconf load /org/gnome/ < "$GNOME_CONF"
+    echo "[OK] Gnome mis à jour."
+else
+    echo "ℹ️  Aucun fichier de config Gnome trouvé, on passe."
+fi
 
 echo "=========================================="
 echo "Opération terminée avec succès."
