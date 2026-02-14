@@ -4,8 +4,8 @@
 set -e # Arrête le script en cas d'erreur
 
 # On définit le répertoire Git (évite d'exporter si non nécessaire par la suite)
-GIT_DIR="$HOME/Mes-Donnees/Git"
-export GIT_DIR # (utilisé par git-clone.sh et home-manager.sh)
+MY_GIT_DIR="$HOME/Mes-Donnees/Git"
+export MY_GIT_DIR # (utilisé par git-clone.sh et home-manager.sh)
 
 
 echo "--- [1/4] Mise en place des repos Git ---"

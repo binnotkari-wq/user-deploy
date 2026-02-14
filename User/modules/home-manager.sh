@@ -15,7 +15,7 @@ if ! command -v home-manager &> /dev/null; then
 fi
 
 # 3. Déploiement via chemin absolu
-HM_CONFIG_FILE="$GIT_DIR/home-manager/home.nix"
+HM_CONFIG_FILE="$MY_GIT_DIR/home-manager/home.nix"
 
 if [ -f "$HM_CONFIG_FILE" ]; then
     echo "⚙️  Application de la configuration : $HM_CONFIG_FILE"
