@@ -42,15 +42,15 @@ APPS_GNOME_FEDORA_ATOMIC=(
     "org.gnome.Characters"
     "org.gnome.TextEditor "
     "org.gnome.Weather"
-    "app/org.gnome.Loupe"
+    "org.gnome.Loupe"
     "org.gnome.Extensions"
     "org.gnome.Snapshot"
-    "app/org.gnome.baobab"
-    "app/org.gnome.Maps"
-    "app/org.gnome.font-viewer"
-    "app/org.gnome.clocks"
-    "app/org.gnome.Papers"
-    "app/org.gnome.Logs"
+    "org.gnome.baobab"
+    "org.gnome.Maps"
+    "org.gnome.font-viewer"
+    "org.gnome.clocks"
+    "org.gnome.Papers"
+    "org.gnome.Logs"
 ) 
 
 APPS_KDE=(

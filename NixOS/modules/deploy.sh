@@ -24,7 +24,7 @@ if [[ "$SCENARIO" != "REPARATION" ]]; then
     echo "📂 Préparation du dossier cible..."
     mkdir -p "$(dirname "$DOTFILES_TARGET")"
     
-    echo "📂 Copie des dotfiles vers le @home préservé..."
+    echo "📂 Copie des dotfiles vers @home..."
     cp -r "$DOTFILES_SOURCE" "$DOTFILES_TARGET"
 
     echo "⚙️  Génération de la configuration matérielle (UUIDs)..."
