@@ -4,7 +4,7 @@
 # On s'assure que DOTFILES_DIR pointe bien vers le dossier où sont les dossiers d'apps
 DOTFILES_DIR="$HOME/Mes-Donnees/Git/user-dotfiles"
 
-APPS=("bash" "btop" "htop" "foot" "zellij" "kate" "mc" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop")
+APPS=("bash" "btop" "htop" "foot" "zellij" "kate" "mc" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop" "shortcuts")
 
 echo "=========================================="
 echo "    Importation de Dotfiles (Stow + Gnome)"

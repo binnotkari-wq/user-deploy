@@ -22,8 +22,8 @@ while true; do
 done
 
 # --- 2. SÉLECTION DU HOSTNAME (MACHINE) ---
-# On remonte d'un cran pour aller dans nixos-dotfiles/
-DOTFILES_DIR="../nixos-dotfiles"
+# On remonte de deux cran pour aller dans nixos-dotfiles/
+DOTFILES_DIR="../../nixos-dotfiles"
 
 echo -e "\nConfigurations machines détectées dans $DOTFILES_DIR :"
 # On liste les fichiers .nix à la racine des dotfiles
