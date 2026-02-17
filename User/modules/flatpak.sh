@@ -8,21 +8,50 @@ mkdir -p ~/.flatpak-tmp # création du répertoire des fichiers temporaires de f
 
 # 2. Liste d'applications COMMUNES (partout)
 APPS_COMMUNES=(
-    # "org.mozilla.firefox"
-    # "org.videolan.VLC"
-    # "com.visualstudio.code"
-    # "org.telegram.desktop"
-    # "com.bitwarden.desktop"
     "com.heroicgameslauncher.hgl"
 )
 
 # 3. Liste d'applications par Environnement de Bureau (D.E.)
 APPS_GNOME=(
-    # "org.gnome.Geary"
-    # "org.gnome.Extensions"
-    # "org.gnome.Lollypop"
     "org.gnome.gitlab.somas.Apostrophe"
+    "org.gnome.Boxes"
+    "org.gimp.GIMP"
+    "org.libreoffice.LibreOffice"
+    "org.gnome.gitlab.YaLTeR.VideoTrimmer"
+    "io.github.revisto.drum-machine"
+    "io.gitlab.adhami3310.Impression"
+    "garden.jamie.Morphosis"
+    "org.scratchmark.Scratchmark"
+    "fr.handbrake.ghb"
+    "com.github.jeromerobert.pdfarranger"
+    "tv.kodi.Kodi"
+    "org.gnome.DejaDup"   
 )
+
+APPS_GNOME_FEDORA_ATOMIC=(
+    "de.haeckerfelix.Fragments"
+    "com.github.johnfactotum.Foliate"
+    "io.github.celluloid_player.Celluloid"
+    "com.github.PintaProject.Pinta"
+    "org.gnome.World.Secrets"
+    "net.nokyan.Resources"
+    "de.haeckerfelix.Shortwave"
+    "org.gnome.Music"
+    "org.gnome.Calculator"
+    "org.gnome.NautilusPreviewer"
+    "org.gnome.Characters"
+    "org.gnome.TextEditor "
+    "org.gnome.Weather"
+    "app/org.gnome.Loupe"
+    "org.gnome.Extensions"
+    "org.gnome.Snapshot"
+    "app/org.gnome.baobab"
+    "app/org.gnome.Maps"
+    "app/org.gnome.font-viewer"
+    "app/org.gnome.clocks"
+    "app/org.gnome.Papers"
+    "app/org.gnome.Logs"
+) 
 
 APPS_KDE=(
     # "org.kde.okular"
@@ -30,7 +59,7 @@ APPS_KDE=(
     # "org.kde.kcalc"
 )
 
-# --- Logique d'installation ---
+# 4. Logique d'installation
 
 echo "🚀 Installation des applications communes..."
 flatpak install --user -y flathub "${APPS_COMMUNES[@]}"
@@ -39,6 +68,9 @@ flatpak install --user -y flathub "${APPS_COMMUNES[@]}"
 if [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]]; then
     echo "🎨 Environnement GNOME détecté, installation des apps dédiées..."
     flatpak install --user -y flathub "${APPS_GNOME[@]}"
+    if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
+        flatpak install --user -y flathub "${APPS_GNOME_FEDORA_ATOMIC[@]}"
+    fi
 elif [[ "$XDG_CURRENT_DESKTOP" == *"KDE"* ]]; then
     echo "💎 Environnement KDE détecté, installation des apps dédiées..."
     flatpak install --user -y flathub "${APPS_KDE[@]}"
@@ -46,4 +78,6 @@ else
     echo "ℹ️  Environnement inconnu ($XDG_CURRENT_DESKTOP), installation des apps D.E. ignorée."
 fi
 
+echo "Nettoyage des résidus éventuels"
+sudo flatpak uninstall --unused
 echo "✅ Flatpaks installés avec succès."
