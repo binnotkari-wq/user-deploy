@@ -34,7 +34,7 @@ read -p "Entrez le nom de la machine (ex: dell-5485) : " TARGET_HOSTNAME
 export TARGET_HOSTNAME
 
 # --- 3. SÉLECTION DE L'UTILISATEUR ---
-USER_CONFIG_DIR="../nixos-dotfiles/software-setup/users"
+USER_CONFIG_DIR="../../nixos-dotfiles/software-setup/users"
 
 echo -e "\nProfils utilisateurs détectés :"
 # On liste en ignorant les fichiers "-settings.nix"

@@ -5,7 +5,7 @@
 echo -e "\n--- [PHASE DE DÉPLOIEMENT : $SCENARIO] ---"
 
 # --- 1. CONFIGURATION DES CHEMINS ---
-DOTFILES_SOURCE="../nixos-dotfiles"
+DOTFILES_SOURCE="../../nixos-dotfiles"
 # Chemin final pour que tes .nix soient accessibles une fois booté
 DOTFILES_TARGET="/mnt/home/$TARGET_USER/Mes-Donnees/Git/nixos-dotfiles"
 
