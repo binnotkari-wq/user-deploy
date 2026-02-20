@@ -9,12 +9,13 @@ mkdir -p ~/.flatpak-tmp # création du répertoire des fichiers temporaires de f
 # 2. Liste d'applications COMMUNES (partout)
 APPS_COMMUNES=(
     "com.heroicgameslauncher.hgl"
-)
+)com.ranfdev.DistroShelf
 
 # 3. Liste d'applications par Environnement de Bureau (D.E.)
 APPS_GNOME=(
     "org.gnome.gitlab.somas.Apostrophe"
     "org.gnome.Boxes"
+    "com.ranfdev.DistroShelf"
     "org.gimp.GIMP"
     "org.libreoffice.LibreOffice"
     "org.gnome.gitlab.YaLTeR.VideoTrimmer"
@@ -25,10 +26,7 @@ APPS_GNOME=(
     "fr.handbrake.ghb"
     "com.github.jeromerobert.pdfarranger"
     "tv.kodi.Kodi"
-    "org.gnome.DejaDup"   
-)
-
-APPS_GNOME_FEDORA_ATOMIC=(
+    "org.gnome.DejaDup"
     "de.haeckerfelix.Fragments"
     "com.github.johnfactotum.Foliate"
     "io.github.celluloid_player.Celluloid"
@@ -36,6 +34,10 @@ APPS_GNOME_FEDORA_ATOMIC=(
     "org.gnome.World.Secrets"
     "net.nokyan.Resources"
     "de.haeckerfelix.Shortwave"
+)
+
+APPS_GNOME_FEDORA_ATOMIC=(
+
     "org.gnome.Music"
     "org.gnome.Calculator"
     "org.gnome.NautilusPreviewer"
@@ -79,5 +81,5 @@ else
 fi
 
 echo "Nettoyage des résidus éventuels"
-sudo flatpak uninstall --unused
+flatpak uninstall --unused
 echo "✅ Flatpaks installés avec succès."
