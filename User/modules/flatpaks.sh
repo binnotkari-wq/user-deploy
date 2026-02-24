@@ -25,7 +25,7 @@ APPS_GNOME=(
     "io.github.revisto.drum-machine"
     "io.github.celluloid_player.Celluloid"
     "io.gitlab.adhami3310.Impression"
-    "net.nokyan.Resources"sudo sensors-detect
+    "net.nokyan.Resources"
     "de.haeckerfelix.Shortwave"
     "de.haeckerfelix.Fragments"
     "com.ranfdev.DistroShelf"
