@@ -26,6 +26,7 @@ APPS_GNOME=(
     "io.github.celluloid_player.Celluloid"
     "io.gitlab.adhami3310.Impression"
     "net.nokyan.Resources"
+    "ca.desrt.dconf-editor"
     "de.haeckerfelix.Shortwave"
     "de.haeckerfelix.Fragments"
     "com.ranfdev.DistroShelf"

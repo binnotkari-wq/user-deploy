@@ -86,6 +86,13 @@ if ! command -v mdcat &> /dev/null; then
     chmod +x "$BIN_DIR/mdcat"
 fi
 
+# Distrobox
+if ! command -v distrobox &> /dev/null; then
+    echo "  -> Installation de distrobox..."
+    # le script officiel installe correctement l'ensemble des fichiers dans .local
+    curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --prefix ~/.local
+fi
+
 # llama.cpp vulkan
 LLAMA_DIR="$HOME/.local/lib/llama-cpp"
 mkdir -p "$LLAMA_DIR"
