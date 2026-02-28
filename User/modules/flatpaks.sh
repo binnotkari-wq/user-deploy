@@ -6,6 +6,9 @@ echo "--- 📦 Installation des applications Flatpak ---"
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 mkdir -p ~/.flatpak-tmp # création du répertoire des fichiers temporaires de flatpak, dans le dossier utilisateur (la variable d'environnement est dans .bashrc géré par Stow)
 
+# Autoriser les Flatpaks à voir tes Dotfiles
+flatpak override --user --filesystem=~/Mes-Donnees/Git/user-dotfiles:ro
+
 # 2. Liste d'applications COMMUNES (partout)
 APPS_COMMUNES=(
     "com.heroicgameslauncher.hgl"
