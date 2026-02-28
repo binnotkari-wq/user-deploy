@@ -23,6 +23,7 @@ APPS_GNOME_SYSTEM=(
     "org.gnome.Logs"
     "org.gnome.Decibels"
     "org.gnome.SimpleScan"
+    "org.mozilla.firefox"
     "io.github.ilya_zlobintsev.LACT"
 ) 
 
@@ -30,4 +31,8 @@ APPS_GNOME_SYSTEM=(
 flatpak install --system -y flathub "${APPS_GNOME_SYSTEM[@]}"
 echo "Nettoyage des résidus éventuels"
 flatpak uninstall --unused
+
+# 4. Préférences spécifiques au flatpaks
+flatpak run --command=gsettings org.gnome.TextEditor set org.gnome.TextEditor draw-spaces "['space', 'tab', 'newline', 'trailing']"
+
 echo "✅ Flatpaks installés avec succès (system-wide)."

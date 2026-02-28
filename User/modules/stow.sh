@@ -42,5 +42,14 @@ else
     echo "ℹ️  Aucun fichier de config Gnome trouvé, on passe."
 fi
 
+
+
+
+
+
+# Gestion des préférences des flatpaks
+flatpak override --user --filesystem=~/Mes-Donnees/Git/user-dotfiles:ro
+
+
 echo "=========================================="
 echo "Opération terminée avec succès."
