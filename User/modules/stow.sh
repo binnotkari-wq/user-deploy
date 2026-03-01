@@ -47,7 +47,7 @@ fi
 
 
 
-# Gestion des préférences des flatpaks
+# Autorisation pour les flatpaks de suivre les symlinks jusqu'au dossier de stow
 flatpak override --user --filesystem=~/Mes-Donnees/Git/user-dotfiles:ro
 
 

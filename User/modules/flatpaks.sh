@@ -1,27 +1,42 @@
 #!/usr/bin/env bash
 
-echo "--- 📦 Installation des applications Flatpak ---"
+# Nota bene : on banni le mode --user pour les flatpaks. Pour une question de sécurité : installation "systeme" pour que personne (ni un utilisateur, ni un logiciel malveillant) ne puisse altérer les outils de base. En installation mode --user, un logiciel malveillant n'a besoin d'aucun privilège particulier pour alterer le contenu d'un flatpak. De plus, l'installation en mode --user n'isole pas plus les flatpaks. En mode système, il sont dans /var/lib, et donc deja en dehors des fichiers de l'OS (aucune pollution).
+
+echo "--- 📦 Installation des applications Flatpak (system-wide) ---"
 
 # 1. Ajout du dépôt Flathub (indispensable)
-flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-mkdir -p ~/.flatpak-tmp # création du répertoire des fichiers temporaires de flatpak, dans le dossier utilisateur (la variable d'environnement est dans .bashrc géré par Stow)
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-# Autoriser les Flatpaks à voir tes Dotfiles
-flatpak override --user --filesystem=~/Mes-Donnees/Git/user-dotfiles:ro
-
-# 2. Liste d'applications COMMUNES (partout)
+# 2. Liste d'applications par Environnement de Bureau (D.E.)
 APPS_COMMUNES=(
     "com.heroicgameslauncher.hgl"
 )
 
-# 3. Liste d'applications par Environnement de Bureau (D.E.)
 APPS_GNOME=(
+    "org.gnome.Calculator"
+    "org.gnome.NautilusPreviewer"
+    "org.gnome.Characters"
+    "org.gnome.TextEditor"
+    "org.gnome.Weather"
+    "org.gnome.Loupe"
+    "org.gnome.Extensions"
+    "org.gnome.Snapshot"
+    "org.gnome.baobab"
+    "org.gnome.Maps"
+    "org.gnome.font-viewer"
+    "org.gnome.clocks"
+    "org.gnome.Papers"
+    "org.gnome.Logs"
+    "org.gnome.Decibels"
+    "org.gnome.SimpleScan"
     "org.gnome.Music"
     "org.gnome.DejaDup"
     "org.gnome.Boxes"
     "org.gnome.World.Secrets"
     "org.gnome.gitlab.YaLTeR.VideoTrimmer"
     "org.gnome.gitlab.somas.Apostrophe"
+    "org.mozilla.firefox"
+    "io.github.ilya_zlobintsev.LACT"
     "com.github.jeromerobert.pdfarranger"
     "com.github.johnfactotum.Foliate"
     "com.github.PintaProject.Pinta"
@@ -39,12 +54,16 @@ APPS_GNOME=(
     "org.scratchmark.Scratchmark"
     "fr.handbrake.ghb"
     "tv.kodi.Kodi"
+    "org.gnome.meld"
 )
 
-# 4. Logique d'installation
-
-flatpak install --user -y flathub "${APPS_COMMUNES[@]}"
-flatpak install --user -y flathub "${APPS_GNOME[@]}"
+# 3. Installation
+flatpak install --system -y flathub "${APPS_COMMUNES[@]}"
+flatpak install --system -y flathub "${APPS_GNOME[@]}"
 echo "Nettoyage des résidus éventuels"
 flatpak uninstall --unused
-echo "✅ Flatpaks installés avec succès."
+
+# 4. Préférences spécifiques au flatpaks
+flatpak run --command=gsettings org.gnome.TextEditor set org.gnome.TextEditor draw-spaces "['space', 'tab', 'newline', 'trailing']"
+
+echo "✅ Flatpaks installés avec succès (system-wide)."

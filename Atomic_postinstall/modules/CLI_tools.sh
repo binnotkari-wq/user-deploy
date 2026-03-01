@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Script à utiliser pour Fedora Atomic (Silverblue / Kinoite / Ublue )"
+
 echo " Installation des outils CLI (compatible toute distrib sauf Nixos qui gère les outils CLI en nixpkgs)"
 
 # 1. Mise en place des binaires Brew
@@ -43,10 +45,9 @@ echo "--- 📦 Applications et outils installés via Brew ---"
 
 
 # 2. Mise en place des binaires standalone qui ne sont pas disponibles dans brew
-echo "📥 ...binaires standalone (dans $BIN_DIR)..."
-
 BIN_DIR="$HOME/.local/bin"
 mkdir -p "$BIN_DIR"
+echo "📥 ...binaires standalone (dans $BIN_DIR)..."
 
 # Kiwix
 if ! command -v kiwix-manage &> /dev/null; then
@@ -57,18 +58,18 @@ fi
 # llama.cpp vulkan
 LLAMA_DIR="$HOME/.local/lib/llama-cpp"
 mkdir -p "$LLAMA_DIR"
-if ! command -v llama &> /dev/null; then
+if ! command -v llama-server &> /dev/null; then
     echo "  -> Installation de llama.cpp Vulkan..."
     # Téléchargement et extraction propre
     curl -L "https://github.com/ggml-org/llama.cpp/releases/download/b8012/llama-b8012-bin-ubuntu-vulkan-x64.tar.gz" | tar -xz -C "$LLAMA_DIR" --strip-components=1
 
     # Création du wrapper dans ~/.local/bin
-    cat <<EOF > "$BIN_DIR/llama"
+    cat <<EOF > "$BIN_DIR/llama-server"
 #!/usr/bin/env bash
 export LD_LIBRARY_PATH="$LLAMA_DIR:\$LD_LIBRARY_PATH"
-exec "$LLAMA_DIR/llama-cli" "\$@"
+exec "$LLAMA_DIR/llama-server" "\$@"
 EOF
-    chmod +x "$BIN_DIR/llama"
+    chmod +x "$BIN_DIR/llama-server"
 fi
 
 echo "--- 📦 Applications et outils installés dans $BIN_DIR ---"
