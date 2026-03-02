@@ -4,6 +4,11 @@
 
 echo " Installation des outils CLI (compatible toute distrib sauf Nixos qui gère les outils CLI en nixpkgs)"
 
+
+
+# -----------------------------------------------------------
+# -----------------------------------------------------------
+# -----------------------------------------------------------
 # 1. Mise en place des binaires Brew
 echo "🛡️ ...binaires Brew..."
 
@@ -32,17 +37,12 @@ EOF
 
 # Application immédiate pour la session actuelle
 source "$HOME/.bashrc.d/homebrew.bash"
-
 echo "Configuration Brew isolée dans ~/.bashrc.d/homebrew.bash"
-# -----------------------------------------------------------
 
 # Installation des logiciels et outils en CLI
-# powertop n'est pas disponibles dans Brew
-
-# Liste
 # (ne pas installer distrobox via brew, car cela va installer également une version brew de podman, alors que celui-ci est
 # installé nativement sur les Fedora Atomic (Silverblue, Bazzite ...). Distrobox sera donc installé en binaire natif standalone
-# (voir plus bas).
+# (voir plus bas). Powertop n'est pas disponibles dans Brew
 APPS_CLI=(
     "gcc"
     "mc"
@@ -62,8 +62,16 @@ APPS_CLI=(
 # Installation
 brew install "${APPS_CLI[@]}"
 echo "--- 📦 Applications et outils installés via Brew ---"
+# -----------------------------------------------------------
+# -----------------------------------------------------------
+# -----------------------------------------------------------
 
 
+
+
+# -----------------------------------------------------------
+# -----------------------------------------------------------
+# -----------------------------------------------------------
 # 2. Mise en place des binaires standalone qui ne sont pas disponibles dans brew
 BIN_DIR="$HOME/.local/bin"
 mkdir -p "$BIN_DIR"
@@ -99,7 +107,9 @@ if ! command -v distrobox &> /dev/null; then
     # le script officiel installe correctement l'ensemble des fichiers dans .local
     curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --prefix ~/.local
 fi
-
+# -----------------------------------------------------------
+# -----------------------------------------------------------
+# -----------------------------------------------------------
 
 echo "--- 📦 Applications et outils installés dans $BIN_DIR ---"
 echo "✅ Installation terminée pour Silverblue."

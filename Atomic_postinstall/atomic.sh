@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Script à utiliser pour Fedora Atomic (Silverblue / Kinoite / Ublue )".
-# Ce script est à lancer une première fois, ce qui va exécuter la préparation et réglages système préliminaires qui provoqueront un reboot.
+# Ce script est à lancer une première fois pour la préparation et réglages système préliminaires qui provoqueront un reboot.
 # Suite au reboot, on relance ce script. L'étape de préparation et réglages système préliminaires sera automatiquement sautée pour passer
 # aux étapes suivantes.
 

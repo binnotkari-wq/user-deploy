@@ -63,7 +63,4 @@ flatpak install --system -y flathub "${APPS_GNOME[@]}"
 echo "Nettoyage des résidus éventuels"
 flatpak uninstall --unused
 
-# 4. Préférences spécifiques au flatpaks
-flatpak run --command=gsettings org.gnome.TextEditor set org.gnome.TextEditor draw-spaces "['space', 'tab', 'newline', 'trailing']"
-
 echo "✅ Flatpaks installés avec succès (system-wide)."
