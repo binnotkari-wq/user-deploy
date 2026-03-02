@@ -9,7 +9,14 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 
 # 2. Liste d'applications par Environnement de Bureau (D.E.)
 APPS_COMMUNES=(
+    "org.mozilla.firefox"
+    "tv.kodi.Kodi"
     "com.heroicgameslauncher.hgl"
+    "org.libreoffice.LibreOffice"
+    "com.valvesoftware.Steam"
+    "com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
+    # "org.freedesktop.Platform.VulkanLayer.gamescope"
+    # "org.freedesktop.Platform.VulkanLayer.MangoHud"
 )
 
 APPS_GNOME=(
@@ -32,14 +39,14 @@ APPS_GNOME=(
     "org.gnome.Music"
     "org.gnome.DejaDup"
     "org.gnome.Boxes"
+    "org.gnome.meld"
     "org.gnome.World.Secrets"
     "org.gnome.gitlab.YaLTeR.VideoTrimmer"
     "org.gnome.gitlab.somas.Apostrophe"
-    "org.mozilla.firefox"
-    "io.github.ilya_zlobintsev.LACT"
     "com.github.jeromerobert.pdfarranger"
     "com.github.johnfactotum.Foliate"
     "com.github.PintaProject.Pinta"
+    "io.github.ilya_zlobintsev.LACT"
     "io.github.revisto.drum-machine"
     "io.github.celluloid_player.Celluloid"
     "io.gitlab.adhami3310.Impression"
@@ -49,12 +56,9 @@ APPS_GNOME=(
     "de.haeckerfelix.Fragments"
     "com.ranfdev.DistroShelf"
     "org.gimp.GIMP"
-    "org.libreoffice.LibreOffice"
     "garden.jamie.Morphosis"
     "org.scratchmark.Scratchmark"
     "fr.handbrake.ghb"
-    "tv.kodi.Kodi"
-    "org.gnome.meld"
 )
 
 # 3. Installation
