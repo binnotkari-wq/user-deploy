@@ -17,8 +17,29 @@ sudo flatpak uninstall --unused
 # Ajoute compress=zstd aux lignes btrfs qui n'ont pas encore d'option de compression
 # On ajoute l'option après 'relatime' (standard sur Fedora Silverblue)
 echo "✨ Application et vérification de la compression ZSTD dans /etc/fstab..."
+
+# Sauvegarde du fstab et vérification avant de continuer
+sudo cp /etc/fstab /etc/fstab.bak
+if [ ! -f /etc/fstab.bak ]; then
+    echo "❌ Erreur : Impossible de créer la sauvegarde /etc/fstab.bak. Arrêt du script."
+    exit 1
+fi
+
+# Détection du CPU pour le niveau de compression
+THREADS=$(nproc)
+if [ "$THREADS" -le 4 ]; then
+    LEVEL=1
+else
+    LEVEL=3
+fi
+
+# Application de la compression si absente (ta ligne d'origine)
 sudo sed -i '/btrfs/ { /compress=zstd/! s/relatime/&,compress=zstd/ }' /etc/fstab
-# Le !  : C'est le "NOT". Il dit à sed : "Si tu vois déjà compress=zstd, ne touche à rien, passe à la suite".
+
+# Mise à jour du niveau de compression selon le CPU (zstd:1 ou zstd:3)
+sudo sed -i "s/compress=zstd\(:[0-9]\+\)\?/compress=zstd:$LEVEL/g" /etc/fstab
+
+echo "✅ Configuration Btrfs réglée sur zstd:$LEVEL (CPU $THREADS threads)."
 
 
 # 3. Redémarrage obligatoire
