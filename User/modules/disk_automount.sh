@@ -1,52 +1,69 @@
 #!/usr/bin/env bash
 
-# 1. Définition des chemins (Utilisation de $HOME pour la portabilité)
 BIN_DIR="$HOME/.local/bin"
 SERVICE_DIR="$HOME/.config/systemd/user"
 SCRIPT_PATH="$BIN_DIR/mount-extra-disks.sh"
 SERVICE_PATH="$SERVICE_DIR/mount-extra-disks.service"
 
-echo "--- Configuration du montage automatique ---"
+mkdir -p "$BIN_DIR" "$SERVICE_DIR"
 
-# 2. Création des répertoires si nécessaire
-mkdir -p "$BIN_DIR"
-mkdir -p "$SERVICE_DIR"
-
-# 3. Création du script de montage (le contenu que tu as partagé)
+# Création du script avec une détection de disque système plus fiable
 cat << 'EOF' > "$SCRIPT_PATH"
 #!/usr/bin/env bash
-# mount-extra-disks.sh
-username=$(whoami)
-system_disk=$(lsblk -no NAME / | head -n1 | sed 's/[0-9]*//g')
 
-for dev in $(lsblk -ndo NAME,TYPE | awk '$2=="disk"{print $1}' | grep -v "^${system_disk}"); do
-    for part in $(lsblk -ln /dev/$dev | awk '$6=="part"{print $1}'); do
+username=$(whoami)
+
+# 1. Détecter le disque qui contient la partition racine (/)
+# On cherche le nom du parent du point de montage /
+system_disk=$(lsblk -no PKNAME $(findmnt -nvo SOURCE /) | head -n1)
+
+# Si c'est vide (cas complexes), on essaie une alternative
+if [ -z "$system_disk" ]; then
+    system_disk=$(lsblk -lno NAME,MOUNTPOINT | grep -E ' /$' | awk '{print $1}' | sed 's/[0-9]*//g')
+fi
+
+echo "Disque système ignoré : $system_disk"
+
+# 2. Boucle sur les disques, en ignorant le disque système
+# On filtre les disques (type 'disk') et on exclut le disque système
+for dev in $(lsblk -ndo NAME,TYPE | awk '$2=="disk"{print $1}' | grep -v "$system_disk"); do
+    
+    # 3. Boucle sur les partitions du disque secondaire
+    for part in $(lsblk -ln /dev/$dev -o NAME,TYPE | awk '$2=="part"{print $1}'); do
         device="/dev/$part"
-        if ! mountpoint -q "/run/media/${username}/$(lsblk -no LABEL "$device" || echo "$part")" && ! mount | grep -q "$device"; then
-            label=$(lsblk -no LABEL "$device")
-            if [ -z "$label" ]; then label="$part"; fi
-            
-            mount_point="/run/media/${username}/${label}"
+        
+        # Récupérer le label
+        label=$(lsblk -no LABEL "$device")
+        [ -z "$label" ] && label="$part"
+        
+        mount_point="/run/media/${username}/${label}"
+
+        # Vérifier si déjà monté (via le device ou le point de montage)
+        if ! mountpoint -q "$mount_point" && ! mount | grep -q "$device"; then
+            echo "Tentative de montage : $device sur $mount_point"
             mkdir -p "$mount_point"
             
-            # Note : Sur Silverblue/NixOS, udisksctl est souvent plus fiable sans sudo
-            # Mais on garde ta commande mount d'origine :
-            mount -o users,nofail,noatime "$device" "$mount_point" 2>/dev/null || udisksctl mount -b "$device"
+            # Utilisation de udisksctl (universel et sans sudo)
+            udisksctl mount -b "$device" --no-user-interaction 2>/dev/null
             
-            chown -R "$username":users "$mount_point" 2>/dev/null
-            echo "Tentative de montage : $device → $mount_point"
+            # Fallback mount si udisksctl échoue
+            if [ $? -ne 0 ]; then
+                mount -o users,nofail,noatime "$device" "$mount_point" 2>/dev/null
+                chown -R "$username":users "$mount_point" 2>/dev/null
+            fi
+        else
+            echo "Déjà monté ou occupé : $device"
         fi
     done
 done
 EOF
 
 chmod +x "$SCRIPT_PATH"
-echo "[OK] Script créé dans $SCRIPT_PATH"
 
-# 4. Création du service Systemd
+# Création du service Systemd
 cat << EOF > "$SERVICE_PATH"
 [Unit]
-Description=Monte tous les disques internes secondaires libres pour l'utilisateur
+Description=Monte tous les disques internes secondaires
 After=default.target
 
 [Service]
@@ -58,15 +75,10 @@ RemainAfterExit=true
 WantedBy=default.target
 EOF
 
-echo "[OK] Service créé dans $SERVICE_PATH"
-
-# 5. Activation du service
-echo "--- Activation du service systemd (user-level) ---"
+# Activation
 systemctl --user daemon-reload
 systemctl --user enable mount-extra-disks.service
 systemctl --user start mount-extra-disks.service
 
-echo "Terminé ! Tes disques secondaires devraient maintenant être montés."
-
-
-
+echo "---"
+echo "Installation terminée. Teste maintenant en tapant : mount-extra-disks.sh"
