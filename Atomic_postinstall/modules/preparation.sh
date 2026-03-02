@@ -13,9 +13,7 @@ sudo flatpak remote-delete --force fedora 2>/dev/null || true
 sudo flatpak uninstall --unused
 
 
-# 2. Optimisation btrfs (discard=async et bien prévu de base et traverse LUKS, noatime est déjà là aussi)
-# Ajoute compress=zstd aux lignes btrfs qui n'ont pas encore d'option de compression
-# On ajoute l'option après 'relatime' (standard sur Fedora Silverblue)
+# 2. Optimisation btrfs (discard=async est bien prévu de base, noatime est déjà là aussi)
 echo "✨ Application et vérification de la compression ZSTD dans /etc/fstab..."
 
 # Sauvegarde du fstab et vérification avant de continuer
@@ -33,10 +31,10 @@ else
     LEVEL=3
 fi
 
-# Application de la compression si absente (ta ligne d'origine)
-sudo sed -i '/btrfs/ { /compress=zstd/! s/relatime/&,compress=zstd/ }' /etc/fstab
+# Ajout de l'option de base si absente, en se basant sur la colonne 'btrfs'
+sudo sed -i '/btrfs/ { /compress=zstd/! s/\(btrfs\s\+\)\(\S\+\)/\1\2,compress=zstd/ }' /etc/fstab
 
-# Mise à jour du niveau de compression selon le CPU (zstd:1 ou zstd:3)
+# Harmonisation du niveau de compression (zstd:1 ou zstd:3)
 sudo sed -i "s/compress=zstd\(:[0-9]\+\)\?/compress=zstd:$LEVEL/g" /etc/fstab
 
 echo "✅ Configuration Btrfs réglée sur zstd:$LEVEL (CPU $THREADS threads)."
