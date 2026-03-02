@@ -11,16 +11,38 @@ echo "🛡️ ...binaires Brew..."
 # Brew sera installé dans /home/linuxbrew/.linuxbrew/. Le script s'occupe de régler les permissions.
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# On indique au shell où trouver brew
-echo >> $HOME/.bashrc
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"' >> "$HOME/.bashrc"
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
-source ~/.bashrc # on recharge la configuration de l'environnement shell
+# Gestion des PATH pour Homebrew
+# On s'assure que le dossier de configuration locale existe
+mkdir -p "$HOME/.bashrc.d"
+
+# On crée (ou écrase) le fichier dédié à Brew sans toucher au .bashrc de Stow
+cat << 'EOF' > "$HOME/.bashrc.d/homebrew.bash"
+# Configuration Homebrew (Spécifique Fedora Atomic)
+if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+    # Initialisation de l'environnement Brew
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+    
+    # Sécurité : on place Brew en fin de PATH pour ne pas écraser l'OS
+    export PATH="$PATH:/home/linuxbrew/.linuxbrew/bin"
+    
+    # On garantit que les binaires système restent prioritaires
+    export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+fi
+EOF
+
+# Application immédiate pour la session actuelle
+source "$HOME/.bashrc.d/homebrew.bash"
+
+echo "Configuration Brew isolée dans ~/.bashrc.d/homebrew.bash"
+# -----------------------------------------------------------
 
 # Installation des logiciels et outils en CLI
 # powertop n'est pas disponibles dans Brew
 
 # Liste
+# (ne pas installer distrobox via brew, car cela va installer également une version brew de podman, alors que celui-ci est
+# installé nativement sur les Fedora Atomic (Silverblue, Bazzite ...). Distrobox sera donc installé en binaire natif standalone
+# (voir plus bas).
 APPS_CLI=(
     "gcc"
     "mc"
@@ -35,8 +57,6 @@ APPS_CLI=(
     "just"
     "go"
     "dialog"
-    "distrobox"
-    "podman"
 )
 
 # Installation
@@ -71,6 +91,15 @@ exec "$LLAMA_DIR/llama-server" "\$@"
 EOF
     chmod +x "$BIN_DIR/llama-server"
 fi
+
+
+# Distrobox
+if ! command -v distrobox &> /dev/null; then
+    echo "  -> Installation de distrobox..."
+    # le script officiel installe correctement l'ensemble des fichiers dans .local
+    curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --prefix ~/.local
+fi
+
 
 echo "--- 📦 Applications et outils installés dans $BIN_DIR ---"
 echo "✅ Installation terminée pour Silverblue."

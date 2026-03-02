@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+
+
+
+# 01/03/2026 A faire : récupérer les preferences des applis flatpak
+
+
 # --- Configuration ---
 # On s'assure que DOTFILES_DIR pointe bien vers le dossier où sont les dossiers d'apps
 DOTFILES_DIR="$HOME/Mes-Donnees/Git/user-dotfiles"
@@ -41,15 +47,6 @@ if [ -f "$GNOME_CONF" ]; then
 else
     echo "ℹ️  Aucun fichier de config Gnome trouvé, on passe."
 fi
-
-
-
-
-
-
-# Autorisation pour les flatpaks de suivre les symlinks jusqu'au dossier de stow
-flatpak override --user --filesystem=~/Mes-Donnees/Git/user-dotfiles:ro
-
 
 echo "=========================================="
 echo "Opération terminée avec succès."
