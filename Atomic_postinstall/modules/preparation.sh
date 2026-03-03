@@ -11,7 +11,7 @@ sudo flatpak uninstall -y $(flatpak list --columns=application,origin | grep -i 
 sudo flatpak uninstall --unused
 sudo flatpak remote-delete --force fedora 2>/dev/null || true
 sudo flatpak uninstall --unused
-
+sudo rm -rf /var/lib/flatpak/.removed/*
 
 # 2. Optimisation btrfs (discard=async est bien prévu de base, noatime est déjà là aussi)
 echo "✨ Application et vérification de la compression ZSTD dans /etc/fstab..."

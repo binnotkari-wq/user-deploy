@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # --- Configuration ---
-DOTFILES_DIR="~/Mes-Donnees/Git/user-dotfiles"
+DOTFILES_DIR="$HOME/Mes-Donnees/Git/user-dotfiles"
 
 # 1. Applications standards (dans ~/.config)
 APPS=("bash" "btop" "htop" "foot" "zellij" "kate" "mc" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop" "shortcuts")
@@ -76,42 +76,53 @@ case $CHOICE in
         ;;
 
     2)   
-# 1. Sécurité pour les fichiers existants (Bash, etc.)
-        # On peut généraliser : si un fichier existe en vrai dans $HOME, on le déplace
+        echo "--- 🧹 Nettoyage des conflits potentiels ---"
+        cd "$DOTFILES_DIR" || exit
+
+        # 1. Nettoyage pour les Apps classiques
         for APP in "${APPS[@]}"; do
-            if [ -f "$HOME/.$APP" ] && [ ! -L "$HOME/.$APP" ]; then
-                echo "⚠️ Sauvegarde de .$APP existant en .$APP.bak"
-                mv "$HOME/.$APP" "$HOME/.$APP.bak"
+            if [ -d "$DOTFILES_DIR/$APP" ]; then
+                echo "Vérification de $APP..."
+                # On utilise 'stow --no' pour simuler et trouver les conflits
+                # ou on peut simplement viser les fichiers sensibles comme .bashrc
+                if [ "$APP" == "bash" ] && [ -f "$HOME/.bashrc" ] && [ ! -L "$HOME/.bashrc" ]; then
+                    echo "🗑️ Suppression du .bashrc local par défaut"
+                    rm "$HOME/.bashrc"
+                fi
+                # Pour les dossiers dans .config, on les supprime s'ils existent et ne sont pas des liens
+                if [ -d "$HOME/.config/$APP" ] && [ ! -L "$HOME/.config/$APP" ]; then
+                    echo "🗑️ Suppression du dossier local : ~/.config/$APP"
+                    rm -rf "$HOME/.config/$APP"
+                fi
             fi
         done
 
-        echo "--- 🔗 Liaison des fichiers (Stow) ---"
-        cd "$DOTFILES_DIR"
+        # 2. Nettoyage spécifique pour les Flatpaks
+        if [ -d "$DOTFILES_DIR/flatpaks" ]; then
+            echo "--- 🧹 Nettoyage des résidus Flatpak ---"
+            # On liste les dossiers d'applications présents dans le dépôt
+            for FP_DIR in "$DOTFILES_DIR/flatpaks/.var/app/"*; do
+                FP_NAME=$(basename "$FP_DIR")
+                LOCAL_FP_PATH="$HOME/.var/app/$FP_NAME"
+                if [ -d "$LOCAL_FP_PATH" ] && [ ! -L "$LOCAL_FP_PATH" ]; then
+                    echo "🗑️ Nettoyage du bac à sable local : $FP_NAME"
+                    rm -rf "$LOCAL_FP_PATH"
+                fi
+            done
+        fi
 
-        # Apps classiques
+        echo "--- 🔗 Liaison propre (Stow) ---"
+        # Maintenant que le terrain est vide, Stow fonctionnera sans erreur
         for APP in "${APPS[@]}"; do
-            if [ -d "$APP" ]; then
-                stow -R -v -t "$HOME" "$APP"
-            else
-                echo "⏭️ Saut de $APP (dossier absent)"
-            fi
+            [ -d "$DOTFILES_DIR/$APP" ] && stow -R -v -t "$HOME" "$APP"
         done
 
-        # Flatpaks (on applique le même traitement de faveur)
-        if [ -d "flatpaks" ]; then
-            echo "--- 📦 Liaison des configurations Flatpaks ---"
+        if [ -d "$DOTFILES_DIR/flatpaks" ]; then
             stow -R -v -t "$HOME" flatpaks
         fi
 
         echo "--- 🎨 Application des réglages Gnome ---"
-        if [ -f "$GNOME_CONF" ]; then
-            # On utilise / pour être sûr de tout restaurer, 
-            # ou /org/gnome/ pour être sélectif.
-            dconf load / < "$GNOME_CONF"
-            echo "[OK] Gnome mis à jour."
-        else
-            echo "ℹ️ Aucun fichier dconf trouvé."
-        fi
+        [ -f "$GNOME_CONF" ] && dconf load / < "$GNOME_CONF"
         ;;
 
     *)
