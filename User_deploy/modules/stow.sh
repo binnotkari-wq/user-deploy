@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # --- Configuration ---
-DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+DOTFILES_DIR="~/Mes-Donnees/Git/user-dotfiles"
 
 # 1. Applications standards (dans ~/.config)
 APPS=("bash" "btop" "htop" "foot" "zellij" "kate" "mc" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop" "shortcuts")
