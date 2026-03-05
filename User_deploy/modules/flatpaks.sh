@@ -65,9 +65,18 @@ APPS_GNOME=(
     "fr.handbrake.ghb"
 )
 
+APPS_EXCLUSIVES_ATOMIC=(
+    "io.github.ilya_zlobintsev.LACT"
+)
+
 # 3. Installation
 flatpak install --system -y flathub "${APPS_COMMUNES[@]}"
 flatpak install --system -y flathub "${APPS_GNOME[@]}"
+
+if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
+    flatpak install --system -y flathub "${APPS_EXCLUSIVES_ATOMIC[@]}"
+fi
+
 echo "Nettoyage des résidus éventuels"
 flatpak uninstall --unused
 
