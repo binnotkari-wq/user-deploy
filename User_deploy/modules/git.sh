@@ -3,8 +3,10 @@
 # 0. Détection de l'utilisateur et du HOME (robuste pour NixOS/Silverblue)
 USER_NAME=$(whoami)
 USER_HOME=$HOME
+MY_GIT_DIR="$USER_HOME/Mes-Donnees/Git"
 
 echo "🛡️ Mise en place de Git pour $USER_NAME"
+mkdir -p $MY_GIT_DIR
 
 # 1. Préconfiguration de Git
 setup_git_credentials() {
@@ -62,10 +64,6 @@ EOF
 # Détection robuste du dossier du script (pour Bash)
 CURRENT_SCRIPT_PATH="${BASH_SOURCE[0]}"
 REAL_DIR=$(dirname "$(readlink -f "$CURRENT_SCRIPT_PATH")")
-
-# On définit le répertoire cible
-MY_GIT_DIR="$HOME/Mes-Donnees/Git"
-
 
 REPOS=("home-manager" "info_doc" "install-script" "nixos-dotfiles" "scripts" "user-dotfiles")
 

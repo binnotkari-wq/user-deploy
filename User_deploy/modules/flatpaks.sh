@@ -13,13 +13,16 @@ APPS_COMMUNES=(
     "tv.kodi.Kodi"
     "com.heroicgameslauncher.hgl"
     "org.libreoffice.LibreOffice"
-    "com.valvesoftware.Steam"
+    "com.valvesoftware.Steam" # commenter si Steam est installé en natif
     "com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
     # "org.freedesktop.Platform.VulkanLayer.gamescope"
     # "org.freedesktop.Platform.VulkanLayer.MangoHud"
 )
 
+
 APPS_GNOME=(
+
+    # --- BASE ---
     "org.gnome.Calculator"
     "org.gnome.NautilusPreviewer"
     "org.gnome.Characters"
@@ -37,6 +40,8 @@ APPS_GNOME=(
     "org.gnome.Decibels"
     "org.gnome.SimpleScan"
     "org.gnome.Music"
+    
+    # --- SUPPLEMENT ---
     "org.gnome.DejaDup"
     "org.gnome.Boxes"
     "org.gnome.meld"
@@ -46,7 +51,6 @@ APPS_GNOME=(
     "com.github.jeromerobert.pdfarranger"
     "com.github.johnfactotum.Foliate"
     "com.github.PintaProject.Pinta"
-    "io.github.ilya_zlobintsev.LACT"
     "io.github.revisto.drum-machine"
     "io.github.celluloid_player.Celluloid"
     "io.gitlab.adhami3310.Impression"
