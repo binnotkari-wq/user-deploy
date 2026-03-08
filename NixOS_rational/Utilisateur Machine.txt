@@ -1,0 +1,78 @@
+Utilisateur
+Machine
+
+echo -e "\nDisques physiques :"
+lsblk -dn -o NAME,SIZE,MODEL | grep -v "loop"
+echo ""
+
+while true; do
+    read -p "Entrez le nom du disque sur lequel installer (ex: nvme0n1) : " DISK_NAME
+    if [ -b "/dev/$DISK_NAME" ]; then
+        export DISK="/dev/$DISK_NAME"
+        echo -e "   OK: Disque $DISK sélectionné."
+        break
+    else
+        echo -e "   ERREUR: /dev/$DISK_NAME n'existe pas. Réessayez."
+    fi
+done
+
+
+echo -e "\n--- [RÉCAPITULATIF DES VARIABLES] ---"
+echo "DISK            : $DISK"
+echo "HOSTNAME        : $TARGET_HOSTNAME"
+echo "USER            : $TARGET_USER"
+echo "--------------------------------------"
+
+
+if [[ $DISK == *"nvme"* || $DISK == *"mmcblk"* ]]; then
+    PART_BOOT="${DISK}p1"
+    PART_LUKS="${DISK}p2"
+else
+    PART_BOOT="${DISK}1"
+    PART_LUKS="${DISK}2"
+fi
+
+PART_BTRFS="/dev/mapper/cryptroot"
+
+
+Choix : réinstallation (home conservé) ou initialisation complète ?
+REINSTALL / INIT
+
+Seulement Si INIT :
+echo "Réinitialisation et repartitionnement du disque"
+sgdisk --zap-all "$DISK"
+sgdisk -n 1:0:+512M -t 1:ef00 -c 1:"BOOT" "$DISK"
+sgdisk -n 2:0:0      -t 2:8300 -c 2:"SYSTEM" "$DISK"
+
+cryptsetup luksFormat --type luks2 "$PART_LUKS"
+mkfs.btrfs -f -L NIXOS "$PART_BTRFS"
+
+
+# INIT ou REINSTALL, peu importe
+mkfs.vfat -F 32 -n BOOT "$PART_BOOT" # format systematique de /boot
+cryptsetup open "$PART_LUKS" cryptroot || echo "Déjà ouvert." # ouverture du volume LUKS s'il n'est pas déjà ouvert
+[[ -d "/mnt/@nix" ]]     && btrfs subvolume delete "/mnt/@nix" # suppression si existe déjà (c'est le cas en mode réinstall)
+[[ -d "/mnt/@persist" ]] && btrfs subvolume delete "/mnt/@persist" # suppression si existe déjà (c'est le cas en mode réinstall)
+btrfs subvolume create "/mnt/@nix"
+btrfs subvolume create "/mnt/@persist"
+[[ ! -d "/mnt/@home" ]]  && btrfs subvolume create "/mnt/@home" # on créé @home s'il n'existe pas (c'est le cas en mode initialisation complète)
+umount /mnt
+
+
+# Propagation des infos de partiotns et volumes
+sudo udevadm trigger --subsystem-match=block # On force udev à rafraîchir les UUID immédiatement
+sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
+sudo partprobe $DISK # Rafraichi la détection de la nouvelle table de partitions
+sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
+sudo udevadm settle  # Attend que toutes les partitions soient bien reconnues
+sleep 2 # on laisse le temps aux infos de partions d'être mises à jour
+
+# Montage avant installation
+mount -t tmpfs none /mnt -o size=2G,mode=755 # / en tmpfs pour impermanence
+mkdir -p /mnt/{boot,nix,persist,home,swap}
+mount "$PART_BOOT" "/mnt/boot"
+mount "$PART_BTRFS" "/mnt/nix" -o subvol=@nix,noatime,compress=zstd,ssd,discard=async
+mount "$PART_BTRFS" "/mnt/persist" -o subvol=@persist,noatime,compress=zstd,ssd,discard=async
+mount "$PART_BTRFS" "/mnt/home" -o subvol=@home,noatime,compress=zstd,ssd,discard=async
+
+echo "Préparation disque temrinée."
