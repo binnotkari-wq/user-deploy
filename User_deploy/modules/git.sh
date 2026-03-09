@@ -65,7 +65,7 @@ EOF
 CURRENT_SCRIPT_PATH="${BASH_SOURCE[0]}"
 REAL_DIR=$(dirname "$(readlink -f "$CURRENT_SCRIPT_PATH")")
 
-REPOS=("home-manager" "info_doc" "install-script" "nixos-dotfiles" "scripts" "user-dotfiles")
+REPOS=("archives" "home-manager" "info_doc" "install-script" "nixos-dotfiles" "scripts" "user-dotfiles")
 
 echo "--- 📥 Gestion des dépôts Git (Mode Source) ---"
 
