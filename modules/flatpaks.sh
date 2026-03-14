@@ -5,7 +5,8 @@
 echo "--- 📦 Installation des applications Flatpak (system-wide) ---"
 
 # 1. Ajout du dépôt Flathub (indispensable)
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+# flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --if-not-exists --subset=verified --title='Flathub Verified' flathub-verified https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # 2. Liste d'applications par Environnement de Bureau (D.E.)
 APPS_COMMUNES=(
@@ -13,8 +14,8 @@ APPS_COMMUNES=(
     "tv.kodi.Kodi"
     "com.heroicgameslauncher.hgl"
     "org.libreoffice.LibreOffice"
-    "com.valvesoftware.Steam" # commenter si Steam est installé en natif
-    "com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
+    #"com.valvesoftware.Steam" # commenter si Steam est installé en natif
+    #"com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
     # "org.freedesktop.Platform.VulkanLayer.gamescope"
     # "org.freedesktop.Platform.VulkanLayer.MangoHud"
 )
@@ -40,6 +41,7 @@ APPS_GNOME=(
     "org.gnome.Decibels"
     "org.gnome.SimpleScan"
     "org.gnome.Music"
+    "org.gnome.Showtime"
     
     # --- SUPPLEMENT ---
     "org.gnome.DejaDup"
@@ -52,7 +54,6 @@ APPS_GNOME=(
     "com.github.johnfactotum.Foliate"
     "com.github.PintaProject.Pinta"
     "io.github.revisto.drum-machine"
-    "io.github.celluloid_player.Celluloid"
     "io.gitlab.adhami3310.Impression"
     "net.nokyan.Resources"
     "ca.desrt.dconf-editor"
