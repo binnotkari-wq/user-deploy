@@ -4,7 +4,7 @@
 set -e # Arrête le script en cas d'erreur
 
 echo "--- [1/3] Mise en place de Git ---"
-./modules/git.sh
+./modules/git-sync.sh
 
 echo "--- [2/3] Installation des Flatpaks ---"
 ./modules/flatpaks.sh
