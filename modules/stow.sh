@@ -4,7 +4,7 @@
 DOTFILES_DIR="$HOME/Mes-Donnees/Git/user-dotfiles"
 
 # 1. Applications standards (dans ~/.config)
-APPS=("bash" "btop" "htop" "foot" "zellij" "kate" "mc" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop" "shortcuts")
+APPS=("autostart" "bash" "btop" "htop" "foot" "zellij" "kate" "mc" "org.gnome.Ptyxis" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop" "shortcuts")
 
 # 2. Applications Flatpak (dans ~/.var/app)
 FLATPAKS=(
@@ -21,6 +21,7 @@ FLATPAKS=(
     "org.gimp.GIMP" "org.libreoffice.LibreOffice"
     "garden.jamie.Morphosis" "org.scratchmark.Scratchmark"
     "fr.handbrake.ghb" "tv.kodi.Kodi" "org.gnome.meld"
+    "com.github.tchx84.Flatseal" "io.github.flattool.Ignition" "page.tesk.Refine"
 )
 
 # Fichier de sauvegarde Gnome
