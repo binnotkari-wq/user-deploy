@@ -22,9 +22,7 @@ APPS_GAMING=(
     "net.davidotek.pupgui2" # ProtonUp-Qt
 )
 
-
 APPS_GNOME=(
-
     # --- BASE ---
     "org.gnome.Calculator"
     "org.gnome.NautilusPreviewer"
@@ -76,7 +74,6 @@ APPS_GNOME=(
     "io.github.flattool.Warehouse"
     "it.mijorus.smile"
     "page.tesk.Refine"
-
 )
 
 APPS_EXCLUSIVES_ATOMIC=(
