@@ -5,19 +5,21 @@
 echo "--- 📦 Installation des applications Flatpak (system-wide) ---"
 
 # 1. Ajout du dépôt Flathub (indispensable)
-# flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak remote-add --if-not-exists --subset=verified --title='Flathub Verified' flathub-verified https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-modify --no-filter --enable flathub
+flatpak update -y
+# flatpak remote-add --if-not-exists --subset=verified --title='Flathub Verified' flathub-verified https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # 2. Liste d'applications par Environnement de Bureau (D.E.)
-APPS_COMMUNES=(
-    "org.mozilla.firefox"
-    "tv.kodi.Kodi"
+APPS_GAMING=(
     "com.heroicgameslauncher.hgl"
-    "org.libreoffice.LibreOffice"
-    #"com.valvesoftware.Steam" # commenter si Steam est installé en natif
-    #"com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
-    # "org.freedesktop.Platform.VulkanLayer.gamescope"
-    # "org.freedesktop.Platform.VulkanLayer.MangoHud"
+    "com.usebottles.bottles"
+    "net.lutris.Lutris"
+    "com.valvesoftware.Steam" # commenter si Steam est installé en natif
+    "com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
+    "org.freedesktop.Platform.VulkanLayer.gamescope"
+    "org.freedesktop.Platform.VulkanLayer.MangoHud"
+    "net.davidotek.pupgui2" # ProtonUp-Qt
 )
 
 
@@ -42,6 +44,8 @@ APPS_GNOME=(
     "org.gnome.SimpleScan"
     "org.gnome.Music"
     "org.gnome.Showtime"
+    "org.gnome.Firmware"
+    "org.gnome.SoundRecorder"
     
     # --- SUPPLEMENT ---
     "org.gnome.DejaDup"
@@ -64,6 +68,15 @@ APPS_GNOME=(
     "garden.jamie.Morphosis"
     "org.scratchmark.Scratchmark"
     "fr.handbrake.ghb"
+    "com.github.tchx84.Flatseal"
+    "org.mozilla.firefox"
+    "tv.kodi.Kodi"
+    "org.libreoffice.LibreOffice"
+    "io.github.flattool.Ignition"
+    "io.github.flattool.Warehouse"
+    "it.mijorus.smile"
+    "page.tesk.Refine"
+
 )
 
 APPS_EXCLUSIVES_ATOMIC=(
@@ -71,7 +84,7 @@ APPS_EXCLUSIVES_ATOMIC=(
 )
 
 # 3. Installation
-flatpak install --system -y flathub "${APPS_COMMUNES[@]}"
+flatpak install --system -y flathub "${APPS_GAMING[@]}"
 flatpak install --system -y flathub "${APPS_GNOME[@]}"
 
 if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
@@ -80,5 +93,9 @@ fi
 
 echo "Nettoyage des résidus éventuels"
 flatpak uninstall --unused
+
+echo "Application des permissions spécifiques flatpaks gaming"
+flatpak override --user --env=MANGOHUD=1 com.valvesoftware.Steam
+flatpak override com.usebottles.bottles --user --filesystem=xdg-data/applications
 
 echo "✅ Flatpaks installés avec succès (system-wide)."
