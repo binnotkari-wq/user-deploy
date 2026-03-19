@@ -47,7 +47,7 @@ case $CHOICE in
 	} > "$GNOME_CONF"
         echo "[OK] Gnome sauvegardé."
 
-
+	cd "$DOTFILES_DIR" || exit
         echo "--- 📦 Migration Apps Standards (~/.config) ---"
         for APP in "${APPS[@]}"; do
             if [ -d "$HOME/.config/$APP" ] && [ ! -L "$HOME/.config/$APP" ]; then
@@ -61,6 +61,7 @@ case $CHOICE in
         done
 
         echo "--- 📦 Migration Flatpaks (~/.var/app) ---"
+        mkdir -p "$DOTFILES_DIR/flatpaks/.var/app"
         for FP in "${FLATPAKS[@]}"; do
             FP_PATH="$HOME/.var/app/$FP"
             if [ -d "$FP_PATH" ] && [ ! -L "$FP_PATH" ]; then
