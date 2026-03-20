@@ -37,7 +37,7 @@ lister_applications_gaming() {
     "com.heroicgameslauncher.hgl"
     "com.usebottles.bottles"
     "net.lutris.Lutris"
-    "com.valvesoftware.Steam" # commenter si Steam est installé en natif
+    #"com.valvesoftware.Steam" # commenter si Steam est installé en natif
     "com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
     "org.freedesktop.Platform.VulkanLayer.gamescope"
     "org.freedesktop.Platform.VulkanLayer.MangoHud"
