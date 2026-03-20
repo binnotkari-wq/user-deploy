@@ -35,7 +35,7 @@ lister_applications_gaming() {
     "com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
     "org.freedesktop.Platform.VulkanLayer.gamescope"
     "org.freedesktop.Platform.VulkanLayer.MangoHud"
-    "net.davidotek.pupgui2" # ProtonUp-Qt
+    # "net.davidotek.pupgui2" # ProtonUp-Qt : ramene toutes les runtimes qt et kde....on laisse tomber.
   )
 }
 
