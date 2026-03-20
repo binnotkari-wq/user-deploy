@@ -2,15 +2,31 @@
 
 # Nota bene : on banni le mode --user pour les flatpaks. Pour une question de sécurité : installation "systeme" pour que personne (ni un utilisateur, ni un logiciel malveillant) ne puisse altérer les outils de base. En installation mode --user, un logiciel malveillant n'a besoin d'aucun privilège particulier pour alterer le contenu d'un flatpak. De plus, l'installation en mode --user n'isole pas plus les flatpaks. En mode système, il sont dans /var/lib, et donc deja en dehors des fichiers de l'OS (aucune pollution).
 
-echo "--- 📦 Installation des applications Flatpak (system-wide) ---"
+executer_logique() {
+  echo "--- 📦 Installation des applications Flatpak (system-wide) ---"
+  ajouter_repo_flathub
+  lister_applications_gaming
+  lister_applications_gnome
+  lister_autres_applications_GTK
+  lister_applications_exclusives_atomic
+  installer.....
+  installer.....
+  installer.....
+  installer.....
+  nettoyer_et_appliquer_permissions()
+  echo "✅ Flatpaks installés avec succès (system-wide)."
+}
 
-# 1. Ajout du dépôt Flathub (indispensable)
+
+ajouter_repo_flathub() {
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak remote-modify --no-filter --enable flathub
 flatpak update -y
 # flatpak remote-add --if-not-exists --subset=verified --title='Flathub Verified' flathub-verified https://dl.flathub.org/repo/flathub.flatpakrepo
+}
 
-# 2. Liste d'applications par Environnement de Bureau (D.E.)
+
+lister_applications_gaming() {
 APPS_GAMING=(
     "com.heroicgameslauncher.hgl"
     "com.usebottles.bottles"
@@ -21,9 +37,10 @@ APPS_GAMING=(
     "org.freedesktop.Platform.VulkanLayer.MangoHud"
     "net.davidotek.pupgui2" # ProtonUp-Qt
 )
+}
 
+lister_applications_gnome() {
 APPS_GNOME=(
-    # --- BASE ---
     "org.gnome.Calculator"
     "org.gnome.NautilusPreviewer"
     "org.gnome.Characters"
@@ -44,12 +61,15 @@ APPS_GNOME=(
     "org.gnome.Showtime"
     "org.gnome.Firmware"
     "org.gnome.SoundRecorder"
-    
-    # --- SUPPLEMENT ---
     "org.gnome.DejaDup"
     "org.gnome.Boxes"
     "org.gnome.meld"
     "org.gnome.World.Secrets"
+)
+}   
+
+lister_autres_applications_GTK() {
+APPS_GTK=(
     "org.gnome.gitlab.YaLTeR.VideoTrimmer"
     "org.gnome.gitlab.somas.Apostrophe"
     "com.github.jeromerobert.pdfarranger"
@@ -75,10 +95,13 @@ APPS_GNOME=(
     "it.mijorus.smile"
     "page.tesk.Refine"
 )
+}
 
+lister_applications_exclusives_atomic() {
 APPS_EXCLUSIVES_ATOMIC=(
     "io.github.ilya_zlobintsev.LACT"
 )
+}
 
 # 3. Installation
 flatpak install --system -y flathub "${APPS_GAMING[@]}"
@@ -88,11 +111,11 @@ if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
     flatpak install --system -y flathub "${APPS_EXCLUSIVES_ATOMIC[@]}"
 fi
 
+nettoyer_et_appliquer_permissions() {
 echo "Nettoyage des résidus éventuels"
 flatpak uninstall --unused
 
 echo "Application des permissions spécifiques flatpaks gaming"
 flatpak override --user --env=MANGOHUD=1 com.valvesoftware.Steam
 flatpak override com.usebottles.bottles --user --filesystem=xdg-data/applications
-
-echo "✅ Flatpaks installés avec succès (system-wide)."
+}
