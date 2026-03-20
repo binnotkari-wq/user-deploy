@@ -9,13 +9,20 @@ executer_logique() {
   lister_applications_gnome
   lister_autres_applications_GTK
   lister_applications_exclusives_atomic
-  installer.....
-  installer.....
-  installer.....
-  installer.....
+  installer_applications_gaming
+  installer_applications_gnome
+  installer_autres_applications_GTK
+  installer_applications_exclusives_atomic
   nettoyer_et_appliquer_permissions()
   echo "✅ Flatpaks installés avec succès (system-wide)."
 }
+
+
+
+#====================================
+# FONCTIONS
+#====================================
+
 
 
 ajouter_repo_flathub() {
@@ -24,7 +31,6 @@ ajouter_repo_flathub() {
   flatpak update -y
 # flatpak remote-add --if-not-exists --subset=verified --title='Flathub Verified' flathub-verified https://dl.flathub.org/repo/flathub.flatpakrepo
 }
-
 
 lister_applications_gaming() {
   APPS_GAMING=(
@@ -103,13 +109,23 @@ lister_applications_exclusives_atomic() {
   )
 }
 
-# 3. Installation
-flatpak install --system -y flathub "${APPS_GAMING[@]}"
-flatpak install --system -y flathub "${APPS_GNOME[@]}"
+installer_applications_gaming() {
+  flatpak install --system -y flathub "${APPS_GAMING[@]}"
+}
 
-if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
-    flatpak install --system -y flathub "${APPS_EXCLUSIVES_ATOMIC[@]}"
-fi
+installer_applications_gnome() {
+  flatpak install --system -y flathub "${APPS_GNOME[@]}"
+}
+
+installer_autres_applications_GTK() {
+  flatpak install --system -y flathub "${APPS_GTK[@]}"
+}
+
+installer_applications_exclusives_atomic() {
+  if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
+      flatpak install --system -y flathub "${APPS_EXCLUSIVES_ATOMIC[@]}"
+  fi
+}
 
 nettoyer_et_appliquer_permissions() {
   echo "Nettoyage des résidus éventuels"
@@ -119,3 +135,10 @@ nettoyer_et_appliquer_permissions() {
   flatpak override --user --env=MANGOHUD=1 com.valvesoftware.Steam
   flatpak override com.usebottles.bottles --user --filesystem=xdg-data/applications
 }
+
+
+# =============================================================================
+# EXECUTION
+# =============================================================================
+
+executer_logique "$@"
