@@ -36,12 +36,15 @@ lister_applications_gaming() {
   APPS_GAMING=(
     "com.heroicgameslauncher.hgl"
     "com.usebottles.bottles"
-    "net.lutris.Lutris"
-    #"com.valvesoftware.Steam" # commenter si Steam est installé en natif
-    "com.valvesoftware.Steam.CompatibilityTool.Proton-GE"
-    "org.freedesktop.Platform.VulkanLayer.gamescope"
-    "org.freedesktop.Platform.VulkanLayer.MangoHud"
     # "net.davidotek.pupgui2" # ProtonUp-Qt : ramene toutes les runtimes qt et kde....on laisse tomber.
+  )
+
+    APPS_GAMING_SILVERBLUE=(
+    "net.lutris.Lutris" # ne pas installer sur bazzite : présent en natif
+    "com.valvesoftware.Steam" # ne pas installer sur bazzite : présent en natif
+    "com.valvesoftware.Steam.CompatibilityTool.Proton-GE" # ne pas installer sur bazzite : présent en natif
+    "org.freedesktop.Platform.VulkanLayer.gamescope" # ne pas installer sur bazzite : présent en natif
+    "org.freedesktop.Platform.VulkanLayer.MangoHud" # ne pas installer sur bazzite : présent en natif
   )
 }
 
@@ -72,7 +75,7 @@ lister_applications_gnome() {
     "org.gnome.meld"
     "org.gnome.World.Secrets"
   )
-}   
+}
 
 lister_autres_applications_GTK() {
   APPS_GTK=(
@@ -111,6 +114,10 @@ lister_applications_exclusives_atomic() {
 
 installer_applications_gaming() {
   flatpak install --system -y flathub "${APPS_GAMING[@]}"
+
+  if grep -qE "silverblue|kinoite" /etc/os-release 2>/dev/null; then
+    flatpak install --system -y flathub "${APPS_GAMING_SILVERBLUE[@]}"
+  fi
 }
 
 installer_applications_gnome() {
