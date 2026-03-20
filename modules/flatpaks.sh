@@ -19,15 +19,15 @@ executer_logique() {
 
 
 ajouter_repo_flathub() {
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak remote-modify --no-filter --enable flathub
-flatpak update -y
+  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+  flatpak remote-modify --no-filter --enable flathub
+  flatpak update -y
 # flatpak remote-add --if-not-exists --subset=verified --title='Flathub Verified' flathub-verified https://dl.flathub.org/repo/flathub.flatpakrepo
 }
 
 
 lister_applications_gaming() {
-APPS_GAMING=(
+  APPS_GAMING=(
     "com.heroicgameslauncher.hgl"
     "com.usebottles.bottles"
     "net.lutris.Lutris"
@@ -36,11 +36,11 @@ APPS_GAMING=(
     "org.freedesktop.Platform.VulkanLayer.gamescope"
     "org.freedesktop.Platform.VulkanLayer.MangoHud"
     "net.davidotek.pupgui2" # ProtonUp-Qt
-)
+  )
 }
 
 lister_applications_gnome() {
-APPS_GNOME=(
+  APPS_GNOME=(
     "org.gnome.Calculator"
     "org.gnome.NautilusPreviewer"
     "org.gnome.Characters"
@@ -65,11 +65,11 @@ APPS_GNOME=(
     "org.gnome.Boxes"
     "org.gnome.meld"
     "org.gnome.World.Secrets"
-)
+  )
 }   
 
 lister_autres_applications_GTK() {
-APPS_GTK=(
+  APPS_GTK=(
     "org.gnome.gitlab.YaLTeR.VideoTrimmer"
     "org.gnome.gitlab.somas.Apostrophe"
     "com.github.jeromerobert.pdfarranger"
@@ -94,13 +94,13 @@ APPS_GTK=(
     "io.github.flattool.Warehouse"
     "it.mijorus.smile"
     "page.tesk.Refine"
-)
+  )
 }
 
 lister_applications_exclusives_atomic() {
-APPS_EXCLUSIVES_ATOMIC=(
+  APPS_EXCLUSIVES_ATOMIC=(
     "io.github.ilya_zlobintsev.LACT"
-)
+  )
 }
 
 # 3. Installation
@@ -112,10 +112,10 @@ if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
 fi
 
 nettoyer_et_appliquer_permissions() {
-echo "Nettoyage des résidus éventuels"
-flatpak uninstall --unused
+  echo "Nettoyage des résidus éventuels"
+  flatpak uninstall --unused
 
-echo "Application des permissions spécifiques flatpaks gaming"
-flatpak override --user --env=MANGOHUD=1 com.valvesoftware.Steam
-flatpak override com.usebottles.bottles --user --filesystem=xdg-data/applications
+  echo "Application des permissions spécifiques flatpaks gaming"
+  flatpak override --user --env=MANGOHUD=1 com.valvesoftware.Steam
+  flatpak override com.usebottles.bottles --user --filesystem=xdg-data/applications
 }
