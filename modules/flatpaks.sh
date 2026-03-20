@@ -13,7 +13,7 @@ executer_logique() {
   installer_applications_gnome
   installer_autres_applications_GTK
   installer_applications_exclusives_atomic
-  nettoyer_et_appliquer_permissions()
+  nettoyer_et_appliquer_permissions
   echo "✅ Flatpaks installés avec succès (system-wide)."
 }
 
