@@ -4,7 +4,7 @@
 DOTFILES_DIR="$HOME/Mes-Donnees/Git/user-dotfiles"
 
 # 1. Applications standards (dans ~/.config)
-APPS=("autostart" "bash" "btop" "htop" "foot" "zellij" "kate" "mc" "org.gnome.Ptyxis" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop" "shortcuts")
+APPS=("autostart" "bash" "btop" "htop" "foot" "zellij" "kate" "mc" "nvim" "org.gnome.Ptyxis" "pyradio" "PBE" "applications" "celluloid" "fragments" "kiwix-desktop" "shortcuts" "vim")
 
 # 2. Applications Flatpak (dans ~/.var/app)
 FLATPAKS=(
