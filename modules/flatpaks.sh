@@ -39,7 +39,7 @@ lister_applications_gaming() {
     # "net.davidotek.pupgui2" # ProtonUp-Qt : ramene toutes les runtimes qt et kde....on laisse tomber.
   )
 
-    APPS_GAMING_SILVERBLUE=(
+  APPS_GAMING_SILVERBLUE=(
     "net.lutris.Lutris" # ne pas installer sur bazzite : présent en natif
     "com.valvesoftware.Steam" # ne pas installer sur bazzite : présent en natif
     "com.valvesoftware.Steam.CompatibilityTool.Proton-GE" # ne pas installer sur bazzite : présent en natif
@@ -56,7 +56,6 @@ lister_applications_gnome() {
     "org.gnome.TextEditor"
     "org.gnome.Weather"
     "org.gnome.Loupe"
-    "org.gnome.Extensions"
     "org.gnome.Snapshot"
     "org.gnome.baobab"
     "org.gnome.Maps"
@@ -108,7 +107,9 @@ lister_autres_applications_GTK() {
 
 lister_applications_exclusives_atomic() {
   APPS_EXCLUSIVES_ATOMIC=(
-    "io.github.ilya_zlobintsev.LACT"
+    "io.github.ilya_zlobintsev.LACT" # si Nixos : doit être installé en natif
+    "io.github.qwersyk.Newelle" # si Nixos : doit être installé en natif
+    "org.gnome.Extensions" # si Nixos : dest déjà installé en natif (et ne peux pas être desinstallé)
   )
 }
 
