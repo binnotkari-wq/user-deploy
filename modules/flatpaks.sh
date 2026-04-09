@@ -5,18 +5,18 @@
 executer_logique() {
   echo "--- 📦 Installation des applications Flatpak (system-wide) ---"
   ajouter_repo_flathub
-  lister_applications_gaming
-  lister_applications_gnome
-  lister_autres_applications_GTK
-  lister_applications_exclusives_atomic
   installer_applications_gaming
+  if ! grep -qE "bazzite" /etc/os-release 2>/dev/null; then
+    installer_applications_gaming_non_bazzite
+  fi
   installer_applications_gnome
   installer_autres_applications_GTK
-  installer_applications_exclusives_atomic
+  if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
+    installer_applications_exclusives_atomic
+  fi
   nettoyer_et_appliquer_permissions
   echo "✅ Flatpaks installés avec succès (system-wide)."
 }
-
 
 
 #====================================
@@ -32,23 +32,27 @@ ajouter_repo_flathub() {
 # flatpak remote-add --if-not-exists --subset=verified --title='Flathub Verified' flathub-verified https://dl.flathub.org/repo/flathub.flatpakrepo
 }
 
-lister_applications_gaming() {
+installer_applications_gaming() {
   APPS_GAMING=(
     "com.heroicgameslauncher.hgl"
     "com.usebottles.bottles"
     # "net.davidotek.pupgui2" # ProtonUp-Qt : ramene toutes les runtimes qt et kde....on laisse tomber.
   )
+  flatpak install --system -y flathub "${APPS_GAMING[@]}"
+}
 
-  APPS_GAMING_SILVERBLUE=(
+installer_applications_gaming_non_bazzite() {
+  APPS_GAMING_NON_BAZZITE=(
     "net.lutris.Lutris" # ne pas installer sur bazzite : présent en natif
     "com.valvesoftware.Steam" # ne pas installer sur bazzite : présent en natif
     "com.valvesoftware.Steam.CompatibilityTool.Proton-GE" # ne pas installer sur bazzite : présent en natif
     "org.freedesktop.Platform.VulkanLayer.gamescope" # ne pas installer sur bazzite : présent en natif
     "org.freedesktop.Platform.VulkanLayer.MangoHud" # ne pas installer sur bazzite : présent en natif
   )
+  flatpak install --system -y flathub "${APPS_GAMING_NON_BAZZITE[@]}"
 }
 
-lister_applications_gnome() {
+installer_applications_gnome() {
   APPS_GNOME=(
     "org.gnome.Calculator"
     "org.gnome.NautilusPreviewer"
@@ -74,9 +78,10 @@ lister_applications_gnome() {
     "org.gnome.meld"
     "org.gnome.World.Secrets"
   )
+  flatpak install --system -y flathub "${APPS_GNOME[@]}"
 }
 
-lister_autres_applications_GTK() {
+installer_autres_applications_GTK() {
   APPS_GTK=(
     "org.gnome.gitlab.YaLTeR.VideoTrimmer"
     "org.gnome.gitlab.somas.Apostrophe"
@@ -102,37 +107,18 @@ lister_autres_applications_GTK() {
     "io.github.flattool.Warehouse"
     "it.mijorus.smile"
     "page.tesk.Refine"
+    "org.nickvision.tagger"
   )
+  flatpak install --system -y flathub "${APPS_GTK[@]}"
 }
 
-lister_applications_exclusives_atomic() {
+installer_applications_exclusives_atomic() {
   APPS_EXCLUSIVES_ATOMIC=(
     "io.github.ilya_zlobintsev.LACT" # si Nixos : doit être installé en natif
     "io.github.qwersyk.Newelle" # si Nixos : doit être installé en natif
     "org.gnome.Extensions" # si Nixos : dest déjà installé en natif (et ne peux pas être desinstallé)
   )
-}
-
-installer_applications_gaming() {
-  flatpak install --system -y flathub "${APPS_GAMING[@]}"
-
-  if grep -qE "silverblue|kinoite" /etc/os-release 2>/dev/null; then
-    flatpak install --system -y flathub "${APPS_GAMING_SILVERBLUE[@]}"
-  fi
-}
-
-installer_applications_gnome() {
-  flatpak install --system -y flathub "${APPS_GNOME[@]}"
-}
-
-installer_autres_applications_GTK() {
-  flatpak install --system -y flathub "${APPS_GTK[@]}"
-}
-
-installer_applications_exclusives_atomic() {
-  if grep -qE "silverblue|kinoite|bazzite" /etc/os-release 2>/dev/null; then
-      flatpak install --system -y flathub "${APPS_EXCLUSIVES_ATOMIC[@]}"
-  fi
+  flatpak install --system -y flathub "${APPS_EXCLUSIVES_ATOMIC[@]}"
 }
 
 nettoyer_et_appliquer_permissions() {
