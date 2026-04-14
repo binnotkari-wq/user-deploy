@@ -47,6 +47,8 @@ setup_git_credentials() {
   # Sécurité pour éviter les erreurs de "dossier non sûr" sur NixOS
   git config --global --add safe.directory "$USER_HOME/Mes-Donnees/Git/*"
 
+  git config --global init.defaultBranch main
+
   if [ -n "$GITHUB_TOKEN" ]; then
       echo "https://binnotkari-wq:$GITHUB_TOKEN@github.com" > "$USER_HOME/.git-credentials"
       chmod 600 "$USER_HOME/.git-credentials"
